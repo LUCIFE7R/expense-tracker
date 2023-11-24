@@ -2,7 +2,8 @@ import express from "express"
 import mongoose from "mongoose"
 import dotenv from "dotenv"
 dotenv.config();
-import Transaction from "./model/trasaction.js";
+import gethealth from "./controllers/health.js";
+import {getallTarnasaction,postTransaction} from "./controllers/tranasactions.js"
 
 const app = express();
 app.use(express.json());
@@ -15,43 +16,12 @@ const connectdb = async ()=>{
 }
 connectdb()
 
-app.get('/api/health' , (req,res)=>{
-        return res.json({
-            success : true,
-            message : "server is running"
-        })
-});
+app.get('/api/health' , gethealth);
 
+app.post('/api/transaction' , postTransaction);
 
-app.post('/api/transaction' , async(req,res)=>{
-   const {amount,type,description,category} = req.body;
+app.get('/api/transactions' , getallTarnasaction);
 
-   const transaction = new Transaction({
-    amount,type,description,category
-})
-try{
-    const savedData = await transaction.save();
-    return res.json({
-        success : true,
-        data : savedData,
-        message : 'transaction successfull'
-    })
-}catch(e){
-    return res.json({
-        success : false,
-        message : e.message
-    })
-}
-})
-
-app.get('/api/transactions' , async(req,res)=>{
-    const savedtransaction = await Transaction.find();
-    return res.json({
-        success : true,
-        data : savedtransaction,
-        message : "Transaction fetch succesfully"
-    })
-})
 const PORT = 5000;
 
 app.listen(PORT,()=>{
