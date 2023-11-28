@@ -1,19 +1,21 @@
 import Transaction from "../model/trasaction.js";
 
-const getallTarnasaction = async (req, res) => {
-    const savedtransaction = await Transaction.find();
-    return res.json({
-        success: true,
-        data: savedtransaction,
-        message: "Transaction fetch succesfully"
-    })
+const getallTarnasaction =  async (req, res) => {
+    const { id } = req.params
+    const findTransaction = await Transaction.find({ user: { _id: id } }).populate('user')
+   
+    res.json({
+        success:"true",
+        data:findTransaction,
+        message:" Transaction fetch successfully..!" 
+      })
 }
 
 const postTransaction = async (req, res) => {
-    const { amount, type, description, category } = req.body;
+    const {user, amount, type, description, category } = req.body;
 
     const transaction = new Transaction({
-        amount, type, description, category
+       user, amount, type, description, category
     })
     try {
         const savedData = await transaction.save();
@@ -29,6 +31,4 @@ const postTransaction = async (req, res) => {
         })
     }
 }
-
-
 export { getallTarnasaction, postTransaction }

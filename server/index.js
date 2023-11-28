@@ -4,7 +4,7 @@ import dotenv from "dotenv"
 dotenv.config();
 import gethealth from "./controllers/health.js";
 import {getallTarnasaction,postTransaction} from "./controllers/tranasactions.js"
-
+import { postuserdata ,postuserlogin} from "./controllers/loginSignup.js";
 const app = express();
 app.use(express.json());
 
@@ -20,7 +20,11 @@ app.get('/api/health' , gethealth);
 
 app.post('/api/transaction' , postTransaction);
 
-app.get('/api/transactions' , getallTarnasaction);
+app.get('/api/gettransactions/user/:id' , getallTarnasaction);
+
+app.post('/api/signup',postuserdata);
+
+app.post('/api/login', postuserlogin);
 
 const PORT = 5000;
 
