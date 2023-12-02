@@ -41,7 +41,7 @@ const userLogin = async ()=>{
                          />
 
                         <input className='input-signup'
-                         type='text'
+                         type='password'
                           placeholder='Create Password' 
                           onChange={(e)=>{
                             setPassword(e.target.value)

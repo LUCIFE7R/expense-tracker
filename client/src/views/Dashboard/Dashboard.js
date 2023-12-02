@@ -10,27 +10,37 @@ function Dashboard() {
   const [transaction, setTransaction] = useState([]);
   const [creditAmt, setCreditAmt] = useState(0);
   const [debitAmt, setDebitAmt] = useState(0);
+  const [id, setId] = useState(0);
+  const [edit, setEdit] = useState(false)
 
 
   const localuser = JSON.parse(localStorage.getItem('expenseuser') || "{}");
 
   const addTransaction = async () => {
-    const responce = await axios.post("/api/transaction",
-      {
+    try {
+      const response = await axios.post("/api/transaction", {
         user: localuser._id,
         amount: amount,
         category: category,
         description: note,
-        type: type
-      }
-    );
+        type: type,
+      });
 
-    if (responce?.data?.success) {
-      alert(responce?.data?.message)
-    } else {
-      alert(responce?.data?.message)
+      if (response?.data?.success) {
+        alert(response?.data?.message);
+        loadTransaction();
+        setAmount("");
+        setNote("");
+        setCategory("");
+        setType("");
+      } else {
+        alert(response?.data?.message);
+      }
+    } catch (error) {
+      console.log(error.message)
     }
-  }
+  };
+
 
   const loadTransaction = async () => {
 
@@ -52,13 +62,71 @@ function Dashboard() {
       }
     });
     setCreditAmt(totalCredit);
-  setDebitAmt(totalDebit);
+    setDebitAmt(totalDebit);
   }
-  
+
 
   useEffect(() => {
     loadTransaction()
   }, [])
+
+  const deleteTransaction = async (id) => {
+    try {
+      const response = await axios.delete(`/api/transaction/${id}`);
+      if (response.data.success) {
+        alert(response.data.message);
+        loadTransaction();
+      } else {
+        alert(response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+    }
+  };
+
+  const editTransation = async (id) => {
+    try {
+      const response = await axios.get(`/api/gettransaction/${id}`);
+
+      if (response?.data?.success) {
+        const transactionToEdit = response?.data?.data;
+        setAmount(transactionToEdit.amount);
+        setNote(transactionToEdit.description);
+        setCategory(transactionToEdit.category);
+        setType(transactionToEdit.type);
+        setId(transactionToEdit._id)
+        setEdit(true)
+      } else {
+        alert(response?.data?.message);
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+  };
+
+  const savedEditTransaction = async () => {
+    try {
+      const response = await axios.put(`/api/edittransaction/${id}`, {
+        amount: amount,
+        category: category,
+        description: note,
+        type: type,
+      });
+
+      if (response?.data?.success) {
+        alert(response?.data?.message);
+        loadTransaction();
+        setAmount("");
+        setNote("");
+        setCategory("");
+        setType("");
+      } else {
+        alert(response?.data?.message);
+      }
+    } catch (error) {
+      console.log(error.message)
+    }
+  };
 
 
   return (
@@ -70,6 +138,7 @@ function Dashboard() {
         <p className='dashbord-head text-center'>Add Transaction</p>
 
         <input type='text'
+          value={amount}
           placeholder='Amount'
           className='input-add'
           onChange={(e) => {
@@ -77,6 +146,7 @@ function Dashboard() {
           }} />
 
         <input type='text'
+          value={note}
           placeholder='Add Note'
           className='input-add'
           onChange={(e) => {
@@ -101,6 +171,7 @@ function Dashboard() {
         </select>
 
         <select className='type-add'
+          value={type}
           onChange={(e) => {
             setType(e.target.value)
           }}>
@@ -108,36 +179,45 @@ function Dashboard() {
           <option value={"credit"}>Credit</option>
           <option value={"debit"}>Debit</option>
         </select>
+        {
+          edit === true ? <button type='button' onClick={savedEditTransaction} className='add-tranasaction-btn'>Edit Transaction</button> :
+            <button type='button' onClick={addTransaction} className='add-tranasaction-btn'>Add Transaction</button>
+        }
 
-        <button type='button' onClick={addTransaction} className='add-tranasaction-btn'>Add Transaction</button>
+
 
         <hr />
         <div>
-         <div className='total-container'> <p>Total Credit : {creditAmt}</p> <p>Total Debit : {debitAmt}</p></div><hr/>
-         <h2 className='text-center'>All Expences</h2>
-         <div className='transactionss-container'>
-          
-          {
-            transaction?.map((tranasaction, index) => {
-              const { amount, category, type, description, createdAt } = tranasaction;
+          <div className='total-container'> <p>Total Credit : ₹ {creditAmt}</p> <p>Total Debit : ₹ {debitAmt}</p></div><hr />
+          <h2 className='text-center'>All Expences</h2>
+          <div className='transactionss-container'>
 
-              const date = new Date(createdAt).toLocaleDateString();
-              const time = new Date(createdAt).toLocaleTimeString();
-              return (
+            {
+              transaction?.map((tranasaction, index) => {
+                const { _id, amount, category, type, description, createdAt } = tranasaction;
+
+                const date = new Date(createdAt).toLocaleDateString();
+                const time = new Date(createdAt).toLocaleTimeString();
+                return (
                   <div className='one-transaction'>
                     <h2 className={` amount ${type === "debit" ? "debit-amt" : "credit-amt"}`}>
-                    ₹ {type === "debit" ? "-" : "+"}{amount}</h2>
-                   
+                      ₹ {type === "debit" ? "-" : "+"}{amount}</h2>
+
                     <p className='type'>{type === "credit" ? "Credited" : "Debited"}</p>
-                    <p className='category'>{category}</p><hr/>
+                    <p className='category'>{category}</p><hr />
                     <p className='dec'>Note: {description}</p>
-                    <p className='edit-btn'>🖋️</p>
-                    <p className='del-btn'>🗑️</p>
+                    <p className='edit-btn' onClick={() => {
+                      editTransation(_id)
+                    }}>🖋️</p>
+
+                    <p className='del-btn' onClick={() => {
+                      deleteTransaction(_id)
+                    }}>🗑️</p>
                   </div>
-              
-              )
-            })
-          }</div>
+
+                )
+              })
+            }</div>
         </div>
       </div>
     </div>

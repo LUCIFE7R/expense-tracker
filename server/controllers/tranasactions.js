@@ -33,14 +33,47 @@ const postTransaction = async (req, res) => {
 }
 
 const delTransaction = async (req, res) => {
-    const { id } = req.params
+    const { id } = req.params;
 
     await Transaction.deleteOne({ _id: id })
 
     res.json({
         success: "true",
-        message: "Product delete succesfully..!"
+        message: "Transaction delete succesfully..!"
     })
 }
 
-export { getallTarnasaction, postTransaction , delTransaction}
+const editTransation = async (req, res) => {
+    const { id } = req.params
+
+    const { amount, type, description, category } = req.body;
+
+    await Transaction.updateOne({ _id: id },
+        {
+            $set: {
+                amount, description, type, category
+            }
+        })
+
+    const updatedTransaction = await Transaction.findOne({ _id: id })
+
+
+    res.json({
+        success: "true",
+        data: updatedTransaction,
+        message: "Transaction update succesfully..!"
+    })
+}
+
+const displayedit = async (req, res) => {
+    const { id } = req.params
+
+    const idTransaction = await Transaction.findOne({ _id: id })
+    res.json({
+        success: "true",
+        data: idTransaction,
+        message: "Transaction display succesfully..!"
+    })
+}
+
+export { getallTarnasaction, postTransaction , delTransaction,editTransation,displayedit}

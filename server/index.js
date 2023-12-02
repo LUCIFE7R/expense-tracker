@@ -3,8 +3,9 @@ import mongoose from "mongoose"
 import dotenv from "dotenv"
 dotenv.config();
 import gethealth from "./controllers/health.js";
-import {getallTarnasaction,postTransaction,delTransaction} from "./controllers/tranasactions.js"
+import {getallTarnasaction,postTransaction,delTransaction,editTransation,displayedit} from "./controllers/tranasactions.js"
 import { postuserdata ,postuserlogin} from "./controllers/loginSignup.js";
+import Transaction from "./model/trasaction.js";
 const app = express();
 app.use(express.json());
 
@@ -26,7 +27,11 @@ app.post('/api/signup',postuserdata);
 
 app.post('/api/login', postuserlogin);
 
-app.delete('/api/delproduct/:id', delTransaction)
+app.delete('/api/transaction/:id', delTransaction)
+
+app.put('/api/edittransaction/:id', editTransation)
+
+app.get('/api/gettransaction/:id', displayedit)
 
 const PORT = 5000;
 
