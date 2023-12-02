@@ -1,9 +1,76 @@
-import React from 'react'
-
+import React, { useState } from 'react'
+import Navbar from '../../component/Navbar/Navbar'
+import "./Signup.css"
+import { Link } from 'react-router-dom'
+import axios from "axios"
 function Signup() {
-  return (
-    <div>Signup</div>
-  )
-}
+    const [name, setName] = useState('');
+    const [number, setNumber] = useState('');
+    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
 
+    const signup = async () => {
+        const responce = await axios.post("/api/signup",
+            {
+                name: name,
+                email: email,
+                password: password,
+                number: number
+            });
+
+        if (responce?.data?.success) {
+            alert(responce?.data?.message)
+            window.location.href = "login";
+        } else {
+            alert(responce?.data?.message)
+        }
+    }
+
+    return (
+        <div className='signup-container'>
+            <div> <Navbar /></div>
+            <div>
+                <div className='home-heading-signup'><span className='head-signup'>💸 Expence Tracker System 💸</span></div>
+                <div>
+                    <form className='form-container'>
+                        <p className='text-center signup-heading'>Sign-Up</p>
+
+                        <input className='input-signup'
+                            type='text'
+                            placeholder='Enter Your Name'
+                            onChange={(e) => {
+                                setName(e.target.value)
+                            }} />
+
+                        <input className='input-signup'
+                            type='text'
+                            placeholder='Enter Mob No'
+                            onChange={(e) => {
+                                setNumber(e.target.value)
+                            }} />
+
+                        <input className='input-signup'
+                            type='text'
+                            placeholder='Create Password'
+                            onChange={(e) => {
+                                setPassword(e.target.value)
+                            }} />
+
+                        <input className='input-signup'
+                            type='text'
+                            placeholder='Enter Your Email'
+                            onChange={(e) => {
+                                setEmail(e.target.value)
+                            }} />
+
+                        <button type='button' className='signup-btn' onClick={signup}>Create Account</button>
+
+                        <p className='text-center'>Already have an account ? <Link to="/login">Login</Link></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    )
+
+}
 export default Signup

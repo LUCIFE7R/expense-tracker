@@ -17,12 +17,14 @@ const transactionSchema = new Schema ({
     },
     category:{
         type :String,
-        enum : ['food','shopping','education','travell','entertainment',"other"],
+        enum : ['food','shopping','education','travell','entertainment',"salary","business","money interest","other"],
         default : "other"
     },
     description:{
         type:String,
     }
+},{
+    timestamps:true
 })
 
 const Transaction = model ('Transaction' , transactionSchema);

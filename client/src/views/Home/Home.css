@@ -1,0 +1,19 @@
+.home-page-container{
+    display: flex;
+}
+.home-img{
+    height: 93.2vh;
+    width: 1200px;
+}
+.home-heading{
+    background-color: #001f40;
+    height: 50px;
+    text-align: center;
+}
+.head{
+    padding-top: 120px;
+    color: white;
+    font-size: 25px;
+    font-weight: bold;
+    margin-top: 0px;
+}
