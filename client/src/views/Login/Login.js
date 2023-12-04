@@ -23,11 +23,21 @@ const userLogin = async ()=>{
   }
 
 }
+const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+const handleToggleSidebar = () => {
+  setIsSidebarOpen(!isSidebarOpen);
+};
     return (
-        <div className='signup-container'>
-            <div> <Navbar /></div>
+        <div className={`signup-container ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+            <div className='login-nav-div'> <Navbar />
+            <span className='tog-btn-close' onClick={handleToggleSidebar}>❌</span></div>
             <div>
-                <div className='home-heading-signup'><span className='head-signup'>💸 Expence Tracker System 💸</span></div>
+                <div className='home-heading-signup'><span className='head-signup'>
+                <span className='tog-btn-open' onClick={handleToggleSidebar}>
+              
+            </span>
+                     Expence Tracker System </span></div>
                 <div>
                     <form className='manage-height'>
                         <p className='text-center signup-heading'>Login</p>

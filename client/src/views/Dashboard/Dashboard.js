@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import Navbar from '../../component/Navbar/Navbar'
-import "./Dashboard.css"
+import React, { useState, useEffect } from 'react';
+import Navbar from '../../component/Navbar/Navbar';
+import './Dashboard.css';
 import axios from 'axios';
+
 function Dashboard() {
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
@@ -11,7 +12,12 @@ function Dashboard() {
   const [creditAmt, setCreditAmt] = useState(0);
   const [debitAmt, setDebitAmt] = useState(0);
   const [id, setId] = useState(0);
-  const [edit, setEdit] = useState(false)
+  const [edit, setEdit] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Added state for sidebar
+
+  const handleToggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
 
   const localuser = JSON.parse(localStorage.getItem('expenseuser') || "{}");
@@ -128,14 +134,23 @@ function Dashboard() {
     }
   };
 
-
   return (
-    <div className='dashboard-container'>
-      <div><Navbar /></div>
+    <div className={`dashboard-container ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+      <div className='home-nav-divs'>
+       
+        <Navbar />
+      </div>
       <div>
-        <div className='home-heading-signup'><span className='head-signup'>💸 Expence Tracker System 💸</span></div>
-        <p className='dashbord-heading text-center'>Welcome To Budget Management And Expence Tracker System</p>
-        <p className='dashbord-head text-center'>Add Transaction</p>
+        <div className='home-heading-signup'>
+          <span className='head-signup'>
+            <span className='tog-btn-open' onClick={handleToggleSidebar}>
+              🟰
+            </span>
+            Expence Tracker System
+          </span>
+        </div>
+        <p className='dashbord-heading '>Welcome To Budget Management And Expence Tracker System</p>
+        <p className='dashbord-head '>Add Transaction</p>
 
         <input type='text'
           value={amount}
@@ -189,7 +204,7 @@ function Dashboard() {
         <hr />
         <div>
           <div className='total-container'> <p>Total Credit : ₹ {creditAmt}</p> <p>Total Debit : ₹ {debitAmt}</p></div><hr />
-          <h2 className='text-center'>All Expences</h2>
+          <h2 className='allexpence text-center'>All Expences</h2>
           <div className='transactionss-container'>
 
             {

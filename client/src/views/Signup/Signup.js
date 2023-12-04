@@ -8,6 +8,11 @@ function Signup() {
     const [number, setNumber] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+    const handleToggleSidebar = () => {
+      setIsSidebarOpen(!isSidebarOpen);
+    };
 
     const signup = async () => {
         const responce = await axios.post("/api/signup",
@@ -27,10 +32,15 @@ function Signup() {
     }
 
     return (
-        <div className='signup-container'>
-            <div> <Navbar /></div>
+        <div className={`signup-container ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+            <div className='nav-div'> <Navbar />
+            <span className='tog-btn-closes' onClick={handleToggleSidebar}>❌</span></div>
             <div>
-                <div className='home-heading-signup'><span className='head-signup'>💸 Expence Tracker System 💸</span></div>
+                <div className='home-heading-signup'><span className='head-signup'>
+                <span className='tog-btn-open' onClick={handleToggleSidebar}>
+              🟰
+            </span>
+                     Expence Tracker System </span></div>
                 <div>
                     <form className='form-container'>
                         <p className='text-center signup-heading'>Sign-Up</p>
