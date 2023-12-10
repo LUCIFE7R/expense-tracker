@@ -7,9 +7,9 @@ import { getallTarnasaction, postTransaction, delTransaction, editTransation, di
 import { postuserdata, postuserlogin } from "./controllers/loginSignup.js";
 import Transaction from "./model/trasaction.js";
 import path from 'path';
+const __dirname = path.resolve();
 const app = express();
 app.use(express.json());
-const __dirname = path.resolve();
 
 const connectdb = async () => {
     const conn = await mongoose.connect(process.env.MONGODB_URI)
@@ -35,13 +35,13 @@ app.put('/api/edittransaction/:id', editTransation)
 
 app.get('/api/gettransaction/:id', displayedit)
 
+const PORT = 5000;
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+    app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
 
-    app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html')) });
+    app.get('*', (req, res) => { res.sendFile(path.join(__dirname, '..', 'client', 'build', 'index.html')) });
 }
 
-const PORT = 5000;
 
 app.listen(PORT, () => {
     console.log(`server is runing on port ${PORT}`)
